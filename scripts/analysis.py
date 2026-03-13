@@ -15,6 +15,7 @@ Authors: JS, Cheryl Wu
 
 from __future__ import annotations
 
+import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -24,6 +25,9 @@ import pandas as pd
 import openpyxl
 from dataclasses import dataclass
 
+_SCRIPT_DIR = os.path.dirname(__file__)
+_DATA_DIR = os.path.join(_SCRIPT_DIR, "..", "data")
+_OUTPUT_DIR = os.path.join(_SCRIPT_DIR, "..", "output")
 
 # RMB/USD conversion rate (2025 H1 avg market rate), used by load_zhipu_financials.
 RMB_PER_USD = 7.2
@@ -33,7 +37,7 @@ RMB_PER_USD = 7.2
 # LOAD FINANCIAL DATA FROM EXCEL (12-month spending windows)
 # =============================================================================
 
-def load_minimax_financials(path="../data/hk_ipo_financials_one_sheet.xlsx"):
+def load_minimax_financials(path=os.path.join(_DATA_DIR, "hk_ipo_financials_one_sheet.xlsx")):
     """Load MiniMax compute spending for Q4 2024 + Q1-Q3 2025 (12 months).
 
     Computes Q4 2024 = FY2024 - 9M2024, then adds 9M2025.
@@ -68,7 +72,7 @@ def load_minimax_financials(path="../data/hk_ipo_financials_one_sheet.xlsx"):
     }
 
 
-def load_zhipu_financials(path="../data/zhipu_ipo_financial_metrics.xlsx"):
+def load_zhipu_financials(path=os.path.join(_DATA_DIR, "zhipu_ipo_financial_metrics.xlsx")):
     """Load Zhipu compute spending for H2 2024 + H1 2025 (12 months).
 
     Computes H2 2024 = FY2024 - H1 2024, then adds H1 2025.
@@ -628,6 +632,35 @@ ZHIPU_MODELS = [
         notes="Vision-language model. Finetuned on GLM-4.5-Air base. "
               "Epoch finetune FLOP=1.44e23 (marginal only).",
     ),
+    TrainingRunEstimate(
+        model_name="GLM-4.1V-Thinking",
+        org="zhipu",
+        release_date="2025-08",
+        training_flop_low=1.08e23,   # marginal: finetune compute from Epoch
+        training_flop_high=1.08e23,
+        epoch_estimate=True,
+        notes="9B vision-language reasoning model. Finetuned on GLM-4-9B-0414 base. "
+              "Epoch finetune FLOP=1.08e23 (marginal only). "
+              "Uses Reinforcement Learning with Curriculum Sampling (RLCS).",
+    ),
+    TrainingRunEstimate(
+        model_name="GLM-4.6",
+        org="zhipu",
+        release_date="2025-09",
+        # Epoch lists 4.42e24 total (same 6ND as GLM-4.5), but this is
+        # a post-training update on GLM-4.5 — only count marginal cost.
+        epoch_estimate=False,
+        mfu_override_low=0.01,   # RL is mostly inference (rollouts) -> very low MFU
+        mfu_override_high=0.10,
+        base_model_ref="GLM-4.5",  # correlated with GLM-4.5 pretrain draw
+        finetune_fraction_low=0.01,   # 1% of base
+        finetune_fraction_high=0.10,  # 10% of base
+        notes="Post-training update on GLM-4.5 (same architecture, same 23T tokens). "
+              "Epoch total=4.42e24 but that double-counts base pretraining. "
+              "Marginal cost is the RL post-training. FLOP drawn as "
+              "base_flop * LogNormal(p10=1%,p90=10%) in MC. "
+              "LOW MFU: RL workload is inference-heavy.",
+    ),
     # ---- Models with regression-based or manual estimates ----
     TrainingRunEstimate(
         model_name="CogVideoX",
@@ -919,7 +952,7 @@ OPENAI_TRAINING_HI = OPENAI_GPT45_TRAINING_HI + OPENAI_OTHER_TRAINING_HI   # $1,
 # Training Compute vs Total Compute (12-month windows from Excel)
 # =============================================================================
 
-def build_summary_and_plot(save_path: str | None = "../output/training_vs_total_compute.png"):
+def build_summary_and_plot(save_path: str | None = os.path.join(_OUTPUT_DIR, "training_vs_total_compute.png")):
     """
     Build a summary dataframe and plot comparing estimated training compute
     cost against total compute spending for MiniMax and Zhipu, using 12-month
@@ -1023,7 +1056,7 @@ def build_summary_and_plot(save_path: str | None = "../output/training_vs_total_
         "cost_p50_usd_mn": "Training cost p50 ($M)",
         "cost_p95_usd_mn": "Training cost p95 ($M)",
     })
-    per_model_path = "../output/per_model_training_cost.xlsx"
+    per_model_path = os.path.join(_OUTPUT_DIR, "per_model_training_cost.xlsx")
     per_model_df.to_excel(per_model_path, index=False, float_format="%.2f")
     print(f"\nSaved per-model training cost table to {per_model_path}")
 
@@ -1150,9 +1183,9 @@ def build_summary_and_plot(save_path: str | None = "../output/training_vs_total_
         mm_rd=mm_fin["rd_compute"], zp_rd=zp_fin["rd_compute"],
     )
     plot_marimekko(**marimekko_no_hailuo_args,
-                   save_path="../output/marimekko_training_compute_no_hailuo.html")
+                   save_path=os.path.join(_OUTPUT_DIR, "marimekko_training_compute_no_hailuo.html"))
     plot_marimekko_with_openai(**marimekko_no_hailuo_args,
-                               save_path="../output/marimekko_compute_openai_no_hailuo.html")
+                               save_path=os.path.join(_OUTPUT_DIR, "marimekko_compute_openai_no_hailuo.html"))
 
     return summary
 
@@ -1165,7 +1198,7 @@ def plot_marimekko(
     mm_p5: float, mm_p50: float, mm_p95: float,
     zp_p5: float, zp_p50: float, zp_p95: float,
     mm_rd: float, zp_rd: float,
-    save_path: str | None = "../output/marimekko_training_compute.html",
+    save_path: str | None = os.path.join(_OUTPUT_DIR, "marimekko_training_compute.html"),
 ):
     """
     Interactive pseudo-Marimekko chart (plotly).
@@ -1320,7 +1353,7 @@ def plot_marimekko_with_openai(
     mm_p5: float, mm_p50: float, mm_p95: float,
     zp_p5: float, zp_p50: float, zp_p95: float,
     mm_rd: float, zp_rd: float,
-    save_path: str | None = "../output/marimekko_compute_openai.html",
+    save_path: str | None = os.path.join(_OUTPUT_DIR, "marimekko_compute_openai.html"),
 ):
     """
     Same Marimekko chart as plot_marimekko but with OpenAI added as a third
@@ -1494,4 +1527,4 @@ if __name__ == "__main__":
                   f"FLOP=[{flop_lo}, {flop_hi}]  [{src}]")
 
     # Build summary table and new plot (12-month windows from Excel)
-    summary = build_summary_and_plot(save_path="../output/training_vs_total_compute.png")
+    summary = build_summary_and_plot(save_path=os.path.join(_OUTPUT_DIR, "training_vs_total_compute.png"))

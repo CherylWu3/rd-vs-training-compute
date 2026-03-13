@@ -22,6 +22,7 @@ Uncertainty quantification:
 from __future__ import annotations
 
 import csv
+import os
 import re
 import numpy as np
 import matplotlib
@@ -58,7 +59,7 @@ def parse_resolution(res_str: str) -> int | None:
     return None
 
 
-def load_image_models(path="../data/image_models.csv"):
+def load_image_models(path=os.path.join(os.path.dirname(__file__), "..", "data", "image_models.csv")):
     """Load image models from CSV.
 
     Returns list of dicts with keys:
