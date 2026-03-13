@@ -1,0 +1,25 @@
+Model,Organization,Parameters,Training compute (FLOP),Finetune compute (FLOP),Training time (hours),Training hardware,Hardware quantity,Hardware utilization (MFU),Numerical format,Resolution
+BigGAN-deep 512x512,Google DeepMind,112694781.0,1.8e+21,,,Google TPU v3,,,,512x512
+PIXART-α,Huawei,600000000.0,1.54e+21,,,NVIDIA A100,,,,1024x1024
+DiT-XL/2,Meta AI,675000000.0,6.0e+20,,,Google TPU v3,,,,256x256
+NÜWA,Microsoft Research / PKU,870000000.0,7.25e+21,,,NVIDIA A100,,,,256x256
+Meissonic,,1000000000.0,1.23e+21,,,NVIDIA H100 SXM5 80GB,,,,1024x1024
+GigaGAN,Adobe / CMU,1000000000.0,3.87e+22,,,NVIDIA A100,,,,512x512
+Wuerstchen,,1000000000.0,8.29e+21,,,NVIDIA A100,,,,1536x1536
+MosaicML Diffusion,MosaicML,1289952427.0,1.07e+22,,,NVIDIA A100,,,,512x512
+RQ-Transformer (LSUN-cat),Seoul National University,612000000.0,2.91e+18,,,NVIDIA A100,,,,256x256
+RQ-Transformer (1.4B ImageNet),Seoul National University,1388000000.0,1.06e+20,,,NVIDIA A100,,,,256x256
+RQ-Transformer (3.8B ImageNet),Seoul National University,3822000000.0,2.91e+20,,,NVIDIA A100,,,,256x256
+Stable Diffusion (LDM-KL-8-G),CompVis / Stability AI,1450000000.0,5.0e+22,,,NVIDIA A100,,,,512x512
+Lumina-Image-2.0,Alpha-VLLM,2600000000.0,4.78e+21,,,NVIDIA A100,,,,1024x1024
+DALL·E 2,OpenAI,3500000000.0,3.37e+23,,,NVIDIA A100,,,,1024x1024
+GLIDE,OpenAI,3500000000.0,4.7e+22,,,NVIDIA A100,,,,256x256
+Make-A-Scene,Meta AI,4000000000.0,6.42e+21,,,NVIDIA A100,,,,512x512
+CogView,Zhipu / Tsinghua,4000000000.0,2.68e+22,,,NVIDIA Tesla V100 DGXS 16 GB,,,,480x480
+CogView2,Zhipu,6000000000.0,2.27e+22,,,NVIDIA A100,,,,480x480
+Imagen,Google,7762000000.0,1.46e+22,,,Google TPU v4,,,,1024x1024
+Stable Diffusion 3,Stability AI,8000000000.0,5.0e+22,,,NVIDIA H100,,,,1024x1024
+DALL-E,OpenAI,12000000000.0,4.7e+22,,,NVIDIA Tesla V100 DGXS 16 GB,,,,256x256
+ruDalle: Kandinsky 3.0,AIRI,11900000000.0,2.01e+20,,,NVIDIA A100,,,,1024x1024
+Parti,Google,20000000000.0,5.1e+23,,,Google TPU v4,,,,256x256
+ERNIE-ViLG 2.0,Baidu,24000000000.0,4.66e+22,,,NVIDIA A100,,,,1024x1024
