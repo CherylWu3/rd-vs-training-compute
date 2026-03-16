@@ -756,12 +756,12 @@ ZHIPU_MODELS = [
 # training_flop_high because Epoch only reports pretraining FLOP. But these models
 # also underwent post-training (SFT, RLHF, etc.) which isn't captured.
 #
-# We estimate post-training (SFT + RLHF) as 1%-10% of base pretraining FLOP:
-#   low  = base_flop * 1.01   (post-training adds at least 1%)
-#   high = base_flop * 1.10   (post-training adds at most 10%)
+# We estimate post-training (SFT + RLHF) as 5%-15% of base pretraining FLOP:
+#   low  = base_flop * 1.05   (post-training adds at least 5%)
+#   high = base_flop * 1.15   (post-training adds at most 15%)
 
-_POST_TRAINING_LO = 0.01   # 1% of base
-_POST_TRAINING_HI = 0.10   # 10% of base
+_POST_TRAINING_LO = 0.05   # 5% of base
+_POST_TRAINING_HI = 0.15   # 15% of base
 
 _BASE_PRETRAINING_MODELS = {
     "MiniMax-Text-01", "GLM-4.5", "GLM-4.5-Air",
