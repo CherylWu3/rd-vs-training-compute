@@ -300,10 +300,10 @@ MINIMAX_MODELS = [
         training_flop_low=2.756e23,   # M1-80k RL (full 3 weeks)
         training_flop_high=2.756e23,  # M1-80k RL (full 3 weeks)
         epoch_estimate=True,
-        mfu_override_low=0.01,  # RL is mostly inference (rollouts) -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,  # RL is mostly inference (rollouts) -> low MFU
+        mfu_override_high=0.20,
         notes="RL phase of M1-80k: 3 weeks on 512 H800s. "
-              "Epoch assumes 0.3 MFU for FLOP calculation, but we use 0.01-0.10 for "
+              "Epoch assumes 0.3 MFU for FLOP calculation, but we use 0.05-0.20 for "
               "cost estimation (RL workload is inference-heavy). "
               "SFT stage assumed negligible per Epoch.",
     ),
@@ -314,11 +314,11 @@ MINIMAX_MODELS = [
         training_flop_low=1.378e23,   # M1-40k RL (~1.5 weeks, stopped midway)
         training_flop_high=1.378e23,  # M1-40k RL (~1.5 weeks)
         epoch_estimate=True,
-        mfu_override_low=0.01,  # RL is mostly inference (rollouts) -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,  # RL is mostly inference (rollouts) -> low MFU
+        mfu_override_high=0.20,
         notes="RL phase of M1-40k: ~1.5 weeks on 512 H800s (stopped midway through "
               "the M1-80k 3-week run). Both M1-40k and M1-80k were released. "
-              "Epoch assumes 0.3 MFU for FLOP calculation, but we use 0.01-0.10 for "
+              "Epoch assumes 0.3 MFU for FLOP calculation, but we use 0.05-0.20 for "
               "cost estimation (RL workload is inference-heavy). "
               "SFT stage assumed negligible per Epoch.",
     ),
@@ -342,33 +342,33 @@ MINIMAX_MODELS = [
         model_name="MiniMax-M2 (RL phase)",
         org="minimax",
         release_date="2025-10",
-        training_flop_low=6e21,   # display: base_low * frac_low
-        training_flop_high=1.5e23,  # display: base_high * frac_high
+        training_flop_low=3e22,   # display: base_low * frac_low
+        training_flop_high=2.25e23,  # display: base_high * frac_high
         epoch_estimate=False,
-        mfu_override_low=0.01,   # RL is inference-heavy -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,   # RL is inference-heavy -> low MFU
+        mfu_override_high=0.20,
         gpu_peak_flops_override=1.513e15,  # H800 FP8
         base_model_ref="MiniMax-M2 (pretraining)",  # correlated with pretrain draw
-        finetune_fraction_low=0.01,   # 1% of base
-        finetune_fraction_high=0.10,  # 10% of base
-        notes="RL phase of M2. FLOP drawn as base_flop * LogNormal(p10=1%,p90=10%) in MC. "
-              "MFU 0.01-0.10 (RL workload is inference-heavy, same as M1 RL).",
+        finetune_fraction_low=0.05,   # 5% of base
+        finetune_fraction_high=0.15,  # 15% of base
+        notes="RL phase of M2. FLOP drawn as base_flop * LogNormal(p10=5%,p90=15%) in MC. "
+              "MFU 0.05-0.20 (RL workload is inference-heavy, same as M1 RL).",
     ),
     TrainingRunEstimate(
         model_name="MiniMax-M2.1",
         org="minimax",
         release_date="2025-12",
-        training_flop_low=6e21,     # display: base_low * frac_low
-        training_flop_high=1.5e23,  # display: base_high * frac_high
+        training_flop_low=3e22,     # display: base_low * frac_low
+        training_flop_high=2.25e23,  # display: base_high * frac_high
         epoch_estimate=False,
-        mfu_override_low=0.01,   # RL is inference-heavy -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,   # RL is inference-heavy -> low MFU
+        mfu_override_high=0.20,
         base_model_ref="MiniMax-M2 (pretraining)",  # correlated with pretrain draw
-        finetune_fraction_low=0.01,   # 1% of base
-        finetune_fraction_high=0.10,  # 10% of base
+        finetune_fraction_low=0.05,   # 5% of base
+        finetune_fraction_high=0.15,  # 15% of base
         notes="Reasoning model update to M2 (229B MoE, 10B active). "
-              "RL finetune on M2. FLOP drawn as base_flop * LogNormal(p10=1%,p90=10%) in MC. "
-              "LOW MFU: RL workload is inference-heavy.",
+              "RL finetune on M2. FLOP drawn as base_flop * LogNormal(p10=5%,p90=15%) in MC. "
+              "MFU 0.05-0.20: RL workload is inference-heavy.",
     ),
     TrainingRunEstimate(
         model_name="Hailuo-02 (pretraining)",
@@ -608,19 +608,19 @@ ZHIPU_MODELS = [
         # This is likely the same pretraining as GLM-4-32B plus RL, but the
         # RL portion isn't separated out. To avoid double-counting the base
         # pretraining (already counted under GLM-4-32B-0414), we estimate
-        # the marginal RL cost as 1-10% of base pretraining.
+        # the marginal RL cost as 5-15% of base pretraining.
         epoch_estimate=False,  # the marginal estimate is ours, not Epoch's
-        mfu_override_low=0.01,  # RL is mostly inference (rollouts) -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,  # RL is mostly inference (rollouts) -> low MFU
+        mfu_override_high=0.20,
         base_model_ref="GLM-4-32B-0414",  # correlated with base pretrain draw
-        finetune_fraction_low=0.01,   # 1% of base
-        finetune_fraction_high=0.10,  # 10% of base
+        finetune_fraction_low=0.05,   # 5% of base
+        finetune_fraction_high=0.15,  # 15% of base
         notes="NO DIRECT EPOCH ESTIMATE FOR MARGINAL COST. "
               "Epoch total=2.88e24, same as GLM-4-32B base. "
               "Likely shares base pretraining with GLM-4-32B; marginal cost "
               "is the RL/rumination post-training. FLOP drawn as "
-              "base_flop * LogNormal(p10=1%,p90=10%) in MC. "
-              "LOW MFU: RL workload is inference-heavy.",
+              "base_flop * LogNormal(p10=5%,p90=15%) in MC. "
+              "MFU 0.05-0.20: RL workload is inference-heavy.",
     ),
     TrainingRunEstimate(
         model_name="GLM-4.5V",
@@ -650,16 +650,16 @@ ZHIPU_MODELS = [
         # Epoch lists 4.42e24 total (same 6ND as GLM-4.5), but this is
         # a post-training update on GLM-4.5 — only count marginal cost.
         epoch_estimate=False,
-        mfu_override_low=0.01,   # RL is mostly inference (rollouts) -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,   # RL is mostly inference (rollouts) -> low MFU
+        mfu_override_high=0.20,
         base_model_ref="GLM-4.5",  # correlated with GLM-4.5 pretrain draw
-        finetune_fraction_low=0.01,   # 1% of base
-        finetune_fraction_high=0.10,  # 10% of base
+        finetune_fraction_low=0.05,   # 5% of base
+        finetune_fraction_high=0.15,  # 15% of base
         notes="Post-training update on GLM-4.5 (same architecture, same 23T tokens). "
               "Epoch total=4.42e24 but that double-counts base pretraining. "
               "Marginal cost is the RL post-training. FLOP drawn as "
-              "base_flop * LogNormal(p10=1%,p90=10%) in MC. "
-              "LOW MFU: RL workload is inference-heavy.",
+              "base_flop * LogNormal(p10=5%,p90=15%) in MC. "
+              "MFU 0.05-0.20: RL workload is inference-heavy.",
     ),
     # ---- Models with regression-based or manual estimates ----
     TrainingRunEstimate(
@@ -689,17 +689,17 @@ ZHIPU_MODELS = [
         model_name="AutoGLM-Rumination",
         org="zhipu",
         release_date="2025-04",
-        training_flop_low=2.88e22 * 0.01,    # display: ≈ 2.88e20
-        training_flop_high=2.88e23 * 0.10,   # display: ≈ 2.88e22
+        training_flop_low=2.88e22 * 0.05,    # display: ≈ 1.44e21
+        training_flop_high=2.88e23 * 0.15,   # display: ≈ 4.32e22
         epoch_estimate=False,
-        mfu_override_low=0.01,  # RL-based agent -> very low MFU
-        mfu_override_high=0.10,
+        mfu_override_low=0.05,  # RL-based agent -> low MFU
+        mfu_override_high=0.20,
         base_model_ref="GLM-Z1-Rumination-32B-0414",  # correlated with Z1 draw
-        finetune_fraction_low=0.01,   # 1% of base
-        finetune_fraction_high=0.10,  # 10% of base
+        finetune_fraction_low=0.05,   # 5% of base
+        finetune_fraction_high=0.15,  # 15% of base
         notes="Agent model. RL finetune on GLM-Z1. FLOP drawn as "
-              "base_flop * LogNormal(p10=1%,p90=10%) in MC. "
-              "LOW MFU: RL workload is inference-heavy.",
+              "base_flop * LogNormal(p10=5%,p90=15%) in MC. "
+              "MFU 0.05-0.20: RL workload is inference-heavy.",
     ),
     # ---- Manually added models (not in CSV at all) ----
     TrainingRunEstimate(

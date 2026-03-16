@@ -8,7 +8,7 @@ Second, for post-trained models where Epoch only reports pre-training via 6ND (e
 
 ## Rule 3: Marginal FLOP for finetuned models
 
-Third, for models that were finetuned on a base model, we use only the marginal FLOP, or the finetune cost itself, not the total that includes base pre-training. The base model's pre-training is already counted as its own separate entry. If our database of AI models contains a model's finetune compute (e.g., GLM-4.5V), we directly use that. For RL finetunes (e.g., GLM-Z1-Rumination), we assume a log-normal distribution with the 10th and 90th percentiles set at 1% and 10% of the base model's median training cost. We also apply a low MFU assumption of 0.01–0.10 for RL, as mentioned before.
+Third, for models that were finetuned on a base model, we use only the marginal FLOP, or the finetune cost itself, not the total that includes base pre-training. The base model's pre-training is already counted as its own separate entry. If our database of AI models contains a model's finetune compute (e.g., GLM-4.5V), we directly use that. For RL finetunes (e.g., GLM-Z1-Rumination), we assume a log-normal distribution with the 10th and 90th percentiles set at 5% and 15% of the base model's median training cost. This range is calibrated to Epoch's M1 data, where the RL phase consumed roughly 7–13% of the pretraining FLOP. We also apply a low MFU assumption of 0.05–0.20 for RL workloads, reflecting the fact that RL training is dominated by rollout/inference rather than dense matmuls.
 
 ## Rule 4: Estimating compute for closed-source models via regression
 
@@ -54,4 +54,4 @@ For MiniMax-M2, I estimate the pretraining at 1.05e24 FLOP at the median, with a
 
 Using the standard MoE approximation, training FLOP ≈ 6ND, where N = active parameters and D = tokens. I bound the token count at 10T–25T. The lower bound of 10T tokens is roughly comparable to MiniMax-Text-01's ~11T-token training set. The upper bound of 25T tokens corresponds to ~2,500 tokens per active parameter, consistent with heavily overtrained inference-efficient models.
 
-We then add an overhead post-training (RL) compute, drawn from a log-normal distribution with the 10th and 90th percentiles set at 1% and 10% of the pre-training compute.
+We then add an overhead post-training (RL) compute, drawn from a log-normal distribution with the 10th and 90th percentiles set at 5% and 15% of the pre-training compute. This range is calibrated to Epoch's M1 RL data, where the RL phase consumed 7–13% of the continual pretraining FLOP.
