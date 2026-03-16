@@ -363,6 +363,7 @@ MINIMAX_MODELS = [
         epoch_estimate=False,
         mfu_override_low=0.05,   # RL is inference-heavy -> low MFU
         mfu_override_high=0.20,
+        gpu_peak_flops_override=1.513e15,  # H800 FP8 (public weights are FP8)
         base_model_ref="MiniMax-M2 (pretraining)",  # correlated with pretrain draw
         finetune_fraction_low=0.05,   # 5% of base
         finetune_fraction_high=0.15,  # 15% of base

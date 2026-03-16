@@ -4,7 +4,7 @@ First, for models where Epoch AI reports the total training compute inclusive of
 
 ## Rule 2: Post-training overhead for pre-training-only estimates
 
-Second, for post-trained models where Epoch only reports pre-training via 6ND (e.g., GLM-4.5), we add a post-training overhead. It is log-normally distributed, with the 10th and 90th percentiles anchored at 5% to 15% of the pre-training compute. This range is calibrated to Epoch's M1 data, where the RL phase alone consumed 7–13% of pretraining FLOP. Additionally, since our models are mostly released in 2025, post-training (SFT + RLHF/RL) has become a substantially larger share of total training compute compared to earlier generations, further justifying the higher overhead.
+Second, for post-trained models where Epoch only reports pre-training via 6ND (e.g., GLM-4.5), we add a post-training overhead. It is log-normally distributed, with the 10th and 90th percentiles anchored at 5% to 15% of the pre-training compute. This range is calibrated to Epoch's M1 data, where the RL phase alone consumed 7–13% of pretraining FLOP. Additionally, since our models are mostly released in 2025, post-training (especially RLVR) has become a substantially larger share of total training compute compared to earlier generations, further justifying the higher overhead.
 
 ## Rule 3: Marginal FLOP for finetuned models
 
